@@ -1,0 +1,57 @@
+Kamu adalah senior full-stack engineer. Bangun web app bernama "Chill Bank Family": pencatatan tabungan mandiri berbasis tap NFC tag atau scan barcode/QR. Bahasa antarmuka: Bahasa Indonesia.
+
+## Stack
+- React + Vite + React Router, Tailwind CSS
+- Supabase (Auth, Postgres, Row Level Security)
+- Deploy ke Vercel (HTTPS wajib, karena Web NFC dan kamera butuh HTTPS)
+- Mobile-first, tampilan bersih dan ramah, nuansa santai ("chill")
+
+## Peran
+1. Member: daftar/login, pesan tabungan, mencatat setoran/penarikan, melihat saldo dan riwayat.
+2. Admin: akun terpisah (kolom role di tabel profiles), punya halaman /admin yang tidak bisa diakses member.
+
+## Alur utama
+1. Member daftar dan login (email + password via Supabase Auth).
+2. Member mengisi form "Pesan Tabungan" (nama tabungan, target opsional, catatan). Status pesanan: pending.
+3. Selama belum ada pesanan yang disetujui, member TIDAK bisa mencatat transaksi. Dashboard hanya menampilkan status pesanan.
+4. Admin melihat daftar pesanan, lalu menyetujui atau menolak (dengan alasan).
+5. Saat disetujui, sistem membuat record tabungan dengan token acak unik (minimal 16 karakter, tidak bisa ditebak).
+6. Admin membuka halaman "Tulis Tag" lalu:
+   - menulis URL `https://<domain>/t/<token>` ke NFC tag memakai Web NFC API (NDEFReader.write), dengan deteksi dukungan dan pesan fallback jika browser tidak mendukung
+   - menampilkan dan mencetak QR code dari URL yang sama
+   - menandai tabungan itu "tag sudah ditulis"
+7. Member tap HP ke tag atau scan QR (kamera, tombol "Scan Barcode" di dashboard). Web membuka `/t/<token>`.
+8. Jika belum login, arahkan ke login lalu kembali ke halaman itu. Jika token bukan milik akun yang login, tampilkan "Tabungan ini bukan milik Anda".
+9. Di halaman tabungan, member memilih Setor atau Tarik, mengisi nominal dan catatan, lalu simpan. Tarik tidak boleh melebihi saldo.
+10. Admin dapat mengoreksi atau membatalkan transaksi (soft cancel dengan alasan, tidak dihapus permanen).
+
+## Halaman
+Member: /login, /daftar, /dashboard, /pesan, /t/:token, /scan, /riwayat
+Admin: /admin, /admin/pesanan, /admin/tabungan, /admin/tulis-tag/:id, /admin/transaksi, /admin/member
+
+## Skema database (Supabase)
+- profiles: id (= auth.users.id), nama, no_hp, role ('member'|'admin'), created_at
+- pesanan_tabungan: id, member_id, nama_tabungan, target_nominal, catatan, status ('pending'|'disetujui'|'ditolak'), alasan_tolak, diproses_oleh, created_at
+- tabungan: id, member_id, pesanan_id, nama, token (unique), tag_ditulis (bool), saldo, aktif, created_at
+- transaksi: id, tabungan_id, member_id, tipe ('setor'|'tarik'), nominal, catatan, status ('sah'|'dibatalkan'), alasan_batal, created_at
+Saldo dihitung dari transaksi berstatus 'sah' melalui trigger atau view, jangan dipercaya dari sisi client.
+
+## Keamanan
+- Aktifkan RLS di semua tabel. Member hanya bisa membaca dan menulis data miliknya. Admin bisa semua melalui cek role.
+- Isi tag hanya URL dengan token, tanpa data saldo atau data pribadi.
+- Transaksi hanya bisa dibuat jika tabungan milik user yang login dan aktif. Validasi di database (policy/RPC), bukan hanya di frontend.
+- Kunci service_role tidak boleh ada di frontend.
+
+## UI/UX
+- Dashboard member: kartu saldo besar, tombol Setor/Tarik/Scan, 10 transaksi terakhir.
+- Format rupiah (Rp 1.250.000), tanggal dalam bahasa Indonesia.
+- State loading, kosong, dan error di setiap halaman. Konfirmasi sebelum simpan transaksi.
+
+## Hasil yang diminta
+1. Struktur folder proyek
+2. File SQL migrasi lengkap (tabel, trigger, RLS policy, seed satu akun admin)
+3. Seluruh kode frontend yang bisa langsung dijalankan
+4. File .env.example dan README berisi langkah setup Supabase, menjalankan lokal, dan deploy Vercel
+5. Catatan batasan: Web NFC hanya jalan di Chrome Android dan HTTPS, jadi admin harus menulis tag dari HP Android
+
+Kerjakan bertahap: database dulu, lalu auth, alur pesanan dan admin, tulis tag, lalu transaksi dan scan. Jalankan dan uji tiap tahap sebelum lanjut.
