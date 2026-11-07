@@ -300,13 +300,26 @@ export default function TabunganDetail() {
               <input
                 type="number"
                 min="1"
-                step="1000"
+                step="any"
                 required
                 value={nominal}
                 onChange={(e) => setNominal(e.target.value)}
-                placeholder="50000"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all font-bold text-base"
+                placeholder="Contoh: 50000"
+                className="w-full px-3.5 py-3 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-sm text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all font-bold"
               />
+              {/* Shortcut Nominal Cepat untuk Mobile */}
+              <div className="flex items-center gap-1.5 mt-2 overflow-x-auto no-scrollbar py-0.5">
+                {[10000, 20000, 50000, 100000, 200000].map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => setNominal(String(amt))}
+                    className="px-2.5 py-1 text-[11px] font-bold bg-[#edf4f0] text-chill-800 hover:bg-chill-100 rounded-lg shrink-0 transition-colors"
+                  >
+                    +{formatRupiah(amt).replace(',00', '')}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>

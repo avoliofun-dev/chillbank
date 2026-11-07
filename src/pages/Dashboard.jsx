@@ -173,9 +173,9 @@ export default function Dashboard() {
       {/* ======================================================== */}
       {/* 2. EXECUTIVE METRICS GRID (4 CARDS ON DESKTOP)          */}
       {/* ======================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 xl:gap-5">
         {/* Card 1: Saldo Utama (Fintech Card Style) */}
-        <div className="chill-balance-card p-6 flex flex-col justify-between min-h-[170px] sm:col-span-2 lg:col-span-1">
+        <div className="chill-balance-card p-5 sm:p-6 flex flex-col justify-between min-h-[160px] col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between text-chill-100 text-xs font-medium z-10">
             <span className="flex items-center gap-1.5 font-bold tracking-wider text-[11px] uppercase">
               <Sparkles className="w-3.5 h-3.5 text-chill-300" /> Saldo Tabungan
@@ -404,76 +404,135 @@ export default function Dashboard() {
                 Belum ada mutasi transaksi. Lakukan setoran pertama melalui tap NFC atau buka detail tabungan.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-[#edf4f0] text-[10px] font-extrabold uppercase tracking-wider text-[#7a938a]">
-                      <th className="pb-3 font-semibold">Tipe & Tabungan</th>
-                      <th className="pb-3 font-semibold">Waktu</th>
-                      <th className="pb-3 font-semibold">Catatan</th>
-                      <th className="pb-3 font-semibold text-right">Nominal</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#edf4f0]">
-                    {transaksiList.map((tx) => (
-                      <tr key={tx.id} className="hover:bg-[#f9fcfb] transition-colors">
-                        <td className="py-3.5 pr-3">
-                          <div className="flex items-center gap-2.5">
-                            <div
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                                tx.status === 'dibatalkan'
-                                  ? 'bg-gray-100 text-gray-400'
-                                  : tx.tipe === 'setor'
-                                  ? 'bg-emerald-50 text-emerald-600'
-                                  : 'bg-rose-50 text-rose-600'
-                              }`}
-                            >
-                              {tx.tipe === 'setor' ? (
-                                <ArrowDownLeft className="w-3.5 h-3.5" />
-                              ) : (
-                                <ArrowUpRight className="w-3.5 h-3.5" />
-                              )}
-                            </div>
-                            <div>
-                              <div className="font-bold text-ink capitalize flex items-center gap-1.5">
-                                {tx.tipe === 'setor' ? 'Setoran' : 'Penarikan'}
-                                {tx.status === 'dibatalkan' && (
-                                  <span className="text-[8px] bg-rose-50 text-rose-600 px-1 py-0.2 rounded font-extrabold">
-                                    Batal
-                                  </span>
+              <>
+                {/* Mobile View: Clean Card Rows */}
+                <div className="md:hidden divide-y divide-[#edf4f0]">
+                  {transaksiList.map((tx) => (
+                    <div key={tx.id} className="py-3 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                            tx.status === 'dibatalkan'
+                              ? 'bg-gray-100 text-gray-400'
+                              : tx.tipe === 'setor'
+                              ? 'bg-emerald-50 text-emerald-600'
+                              : 'bg-rose-50 text-rose-600'
+                          }`}
+                        >
+                          {tx.tipe === 'setor' ? (
+                            <ArrowDownLeft className="w-4 h-4" />
+                          ) : (
+                            <ArrowUpRight className="w-4 h-4" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-ink truncate flex items-center gap-1.5">
+                            <span className="capitalize">{tx.tipe === 'setor' ? 'Setoran' : 'Penarikan'}</span>
+                            {tx.status === 'dibatalkan' && (
+                              <span className="text-[8px] bg-rose-50 text-rose-600 px-1 py-0.2 rounded font-extrabold">
+                                Batal
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] text-ink-muted truncate">
+                            {tx.tabungan?.nama || 'Tabungan'} {tx.catatan ? `· ${tx.catatan}` : ''}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <div
+                          className={`text-xs font-black ${
+                            tx.status === 'dibatalkan'
+                              ? 'text-gray-400 line-through'
+                              : tx.tipe === 'setor'
+                              ? 'text-emerald-700'
+                              : 'text-rose-600'
+                          }`}
+                        >
+                          {tx.tipe === 'setor' ? '+' : '-'}
+                          {formatRupiah(tx.nominal)}
+                        </div>
+                        <div className="text-[9px] text-ink-muted mt-0.5">
+                          {formatTanggal(tx.created_at)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop View: Full Table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-[#edf4f0] text-[10px] font-extrabold uppercase tracking-wider text-[#7a938a]">
+                        <th className="pb-3 font-semibold">Tipe & Tabungan</th>
+                        <th className="pb-3 font-semibold">Waktu</th>
+                        <th className="pb-3 font-semibold">Catatan</th>
+                        <th className="pb-3 font-semibold text-right">Nominal</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#edf4f0]">
+                      {transaksiList.map((tx) => (
+                        <tr key={tx.id} className="hover:bg-[#f9fcfb] transition-colors">
+                          <td className="py-3.5 pr-3">
+                            <div className="flex items-center gap-2.5">
+                              <div
+                                className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                                  tx.status === 'dibatalkan'
+                                    ? 'bg-gray-100 text-gray-400'
+                                    : tx.tipe === 'setor'
+                                    ? 'bg-emerald-50 text-emerald-600'
+                                    : 'bg-rose-50 text-rose-600'
+                                }`}
+                              >
+                                {tx.tipe === 'setor' ? (
+                                  <ArrowDownLeft className="w-3.5 h-3.5" />
+                                ) : (
+                                  <ArrowUpRight className="w-3.5 h-3.5" />
                                 )}
                               </div>
-                              <div className="text-[10px] text-ink-muted">
-                                {tx.tabungan?.nama || 'Tabungan'}
+                              <div>
+                                <div className="font-bold text-ink capitalize flex items-center gap-1.5">
+                                  {tx.tipe === 'setor' ? 'Setoran' : 'Penarikan'}
+                                  {tx.status === 'dibatalkan' && (
+                                    <span className="text-[8px] bg-rose-50 text-rose-600 px-1 py-0.2 rounded font-extrabold">
+                                      Batal
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] text-ink-muted">
+                                  {tx.tabungan?.nama || 'Tabungan'}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="py-3.5 pr-3 text-[11px] text-ink-muted whitespace-nowrap">
-                          {formatTanggal(tx.created_at)}
-                        </td>
-                        <td className="py-3.5 pr-3 text-[11px] text-ink-muted max-w-[180px] truncate">
-                          {tx.catatan || '-'}
-                        </td>
-                        <td className="py-3.5 text-right whitespace-nowrap font-black">
-                          <span
-                            className={
-                              tx.status === 'dibatalkan'
-                                ? 'text-gray-400 line-through'
-                                : tx.tipe === 'setor'
-                                ? 'text-emerald-700'
-                                : 'text-rose-600'
-                            }
-                          >
-                            {tx.tipe === 'setor' ? '+' : '-'}
-                            {formatRupiah(tx.nominal)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                          </td>
+                          <td className="py-3.5 pr-3 text-[11px] text-ink-muted whitespace-nowrap">
+                            {formatTanggal(tx.created_at)}
+                          </td>
+                          <td className="py-3.5 pr-3 text-[11px] text-ink-muted max-w-[180px] truncate">
+                            {tx.catatan || '-'}
+                          </td>
+                          <td className="py-3.5 text-right whitespace-nowrap font-black">
+                            <span
+                              className={
+                                tx.status === 'dibatalkan'
+                                  ? 'text-gray-400 line-through'
+                                  : tx.tipe === 'setor'
+                                  ? 'text-emerald-700'
+                                  : 'text-rose-600'
+                              }
+                            >
+                              {tx.tipe === 'setor' ? '+' : '-'}
+                              {formatRupiah(tx.nominal)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
         </div>

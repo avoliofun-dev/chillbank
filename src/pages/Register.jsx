@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Mail, Lock, User, Phone, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Phone, ArrowRight, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
   const { signUp, isConfigured } = useAuth();
@@ -11,6 +11,7 @@ export default function Register() {
   const [noHp, setNoHp] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -83,7 +84,7 @@ export default function Register() {
                   value={nama}
                   onChange={(e) => setNama(e.target.value)}
                   placeholder="Contoh: Ayah Narendra"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
                 />
               </div>
             </div>
@@ -99,7 +100,7 @@ export default function Register() {
                   value={noHp}
                   onChange={(e) => setNoHp(e.target.value)}
                   placeholder="081234567890"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
                 />
               </div>
             </div>
@@ -116,7 +117,7 @@ export default function Register() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nama@keluarga.com"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
                 />
               </div>
             </div>
@@ -128,14 +129,22 @@ export default function Register() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-ink-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 6 karakter"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-ink-muted hover:text-ink transition-colors focus:outline-none"
+                  title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 

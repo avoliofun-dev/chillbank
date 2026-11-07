@@ -150,11 +150,11 @@ export default function PesanTabungan() {
                 <input
                   type="number"
                   min="1"
-                  step="1000"
+                  step="any"
                   value={targetNominal}
                   onChange={(e) => setTargetNominal(e.target.value)}
-                  placeholder="5000000"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all"
+                  placeholder="Contoh: 5000000"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all font-semibold"
                 />
               </div>
             </div>

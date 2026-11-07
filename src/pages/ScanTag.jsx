@@ -279,7 +279,7 @@ export default function ScanTag() {
             value={manualInput}
             onChange={(e) => setManualInput(e.target.value)}
             placeholder="Tempel URL atau ketik token tabungan..."
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all font-mono"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#dfebe6] bg-[#f9fcfa] text-base sm:text-xs text-ink focus:outline-none focus:border-chill-500 focus:ring-4 focus:ring-chill-100 transition-all font-mono"
           />
 
           <button

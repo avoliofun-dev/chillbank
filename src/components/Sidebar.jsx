@@ -224,30 +224,53 @@ export default function Sidebar() {
       </aside>
 
       {/* ======================================================== */}
-      {/* MOBILE BAR: Responsive Horizontal Navigation             */}
+      {/* MOBILE BOTTOM APP BAR: Native Mobile App Experience      */}
       {/* ======================================================== */}
-      <nav className="md:hidden sticky top-[57px] z-20 bg-white/95 backdrop-blur-md border-b border-[#e2eeea] px-3 py-2 overflow-x-auto flex gap-2 no-scrollbar shadow-xs">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e2eeea] px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(20,45,43,0.06)] pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         {currentGroups
           .flatMap((g) => g.items)
           .map((item) => {
             const Icon = item.icon;
+            const isScan = item.to === '/scan';
             return (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.to === '/admin' || item.to === '/dashboard'}
                 className={({ isActive }) =>
-                  `whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition-colors ${
-                    isActive
-                      ? 'bg-chill-100 text-chill-800 font-bold'
-                      : 'text-ink-muted hover:bg-chill-50'
+                  `flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all relative ${
+                    isScan
+                      ? isActive
+                        ? 'text-white'
+                        : 'text-chill-800'
+                      : isActive
+                      ? 'text-chill-700 font-extrabold'
+                      : 'text-[#6c867e] hover:text-chill-800'
                   }`
                 }
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{item.label}</span>
-                {item.badge && (
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                {({ isActive }) => (
+                  <>
+                    {isScan ? (
+                      <div className={`w-10 h-10 -mt-5 rounded-2xl flex items-center justify-center shadow-lg transition-transform active:scale-95 ${
+                        isActive 
+                          ? 'bg-gradient-to-tr from-chill-800 to-chill-500 text-white shadow-chill-700/30 ring-4 ring-white' 
+                          : 'bg-gradient-to-tr from-chill-700 to-chill-400 text-white shadow-chill-600/25 ring-4 ring-white'
+                      }`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <Icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110 text-chill-700' : ''}`} />
+                        {item.badge && (
+                          <span className="absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-rose-500" />
+                        )}
+                      </div>
+                    )}
+                    <span className={`text-[10px] mt-1 tracking-tight ${isActive ? 'font-bold text-chill-800' : 'font-medium'}`}>
+                      {item.label.split(' ')[0]}
+                    </span>
+                  </>
                 )}
               </NavLink>
             );

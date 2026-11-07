@@ -26,11 +26,11 @@ export default function Layout() {
           </div>
         )}
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10 max-w-7xl w-full mx-auto space-y-6">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 xl:p-10 pb-24 md:pb-8 max-w-7xl w-full mx-auto space-y-6">
           <Outlet />
         </main>
 
-        <footer className="border-t border-[#e2eeea] py-5 px-6 text-center text-[11px] text-[#789389] bg-white/60">
+        <footer className="hidden md:block border-t border-[#e2eeea] py-5 px-6 text-center text-[11px] text-[#789389] bg-white/60">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
             <div>
               © 2026 <strong>Chill Bank Family</strong> · Sistem Finansial Mandiri Berbasis Web NFC & Barcode QR.
