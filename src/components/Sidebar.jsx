@@ -95,7 +95,7 @@ export default function Sidebar() {
       {/* ======================================================== */}
       {/* DESKTOP SIDEBAR: Full-Height Fixed Professional Layout  */}
       {/* ======================================================== */}
-      <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen sticky top-0 bg-white border-r border-[#e2eeea] p-5 shrink-0 z-30 select-none shadow-[2px_0_15px_-4px_rgba(20,45,43,0.02)]">
+      <aside className="no-print hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen sticky top-0 bg-white border-r border-[#e2eeea] p-5 shrink-0 z-30 select-none shadow-[2px_0_15px_-4px_rgba(20,45,43,0.02)]">
         <div className="space-y-6">
           {/* Brand Header */}
           <Link
@@ -226,7 +226,7 @@ export default function Sidebar() {
       {/* ======================================================== */}
       {/* MOBILE BOTTOM APP BAR: Native Mobile App Experience      */}
       {/* ======================================================== */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e2eeea] px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(20,45,43,0.06)] pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+      <nav className="no-print md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e2eeea] px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(20,45,43,0.06)] pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         {currentGroups
           .flatMap((g) => g.items)
           .map((item) => {
