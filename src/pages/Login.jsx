@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Mail, Lock, ArrowRight, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowRight, AlertCircle, Loader2, Eye, EyeOff, Clock, ShieldAlert } from 'lucide-react';
 
 export default function Login() {
   const { signIn, isConfigured } = useAuth();
@@ -15,6 +15,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const from = location.state?.from?.pathname || '/dashboard';
+  const searchParams = new URLSearchParams(location.search);
+  const reason = searchParams.get('reason');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +52,20 @@ export default function Login() {
 
         {/* Card Form */}
         <div className="chill-card p-6 sm:p-8">
+          {/* Banner Alasan Redirect */}
+          {reason === 'inactivity' && (
+            <div className="mb-5 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+              <Clock className="w-4 h-4 shrink-0" />
+              <span>Sesi Anda telah berakhir karena tidak ada aktivitas selama 1 jam. Silakan masuk kembali.</span>
+            </div>
+          )}
+          {reason === 'multi_device' && (
+            <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 shrink-0" />
+              <span>Akun Anda telah masuk dari perangkat lain. Sesi di perangkat ini diakhiri secara otomatis demi keamanan.</span>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />

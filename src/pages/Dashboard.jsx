@@ -43,10 +43,15 @@ export default function Dashboard() {
     setErrorMsg('');
 
     try {
-      // 1. Ambil data tabungan aktif
+      // 1. Ambil data tabungan aktif beserta relasi pesanan untuk target_nominal
       const { data: tabunganData, error: tabunganErr } = await supabase
         .from('tabungan')
-        .select('*')
+        .select(`
+          *,
+          pesanan:pesanan_id (
+            target_nominal
+          )
+        `)
         .eq('member_id', user.id)
         .eq('aktif', true)
         .order('created_at', { ascending: false });
@@ -95,6 +100,13 @@ export default function Dashboard() {
   }, [user]);
 
   const totalSaldo = tabunganList.reduce((acc, curr) => acc + Number(curr.saldo || 0), 0);
+
+  // Kalkulasi target tabungan
+  const totalTarget = tabunganList.reduce((acc, curr) => {
+    const t = curr.target_nominal || curr.pesanan?.target_nominal || 0;
+    return acc + Number(t);
+  }, 0);
+  const totalTargetPercent = totalTarget > 0 ? Math.min(100, Math.round((totalSaldo / totalTarget) * 100)) : null;
 
   // Kalkulasi total setor dan tarik dari transaksi berstatus sah
   const totalSetor = transaksiList
@@ -200,9 +212,15 @@ export default function Dashboard() {
 
           <div className="flex items-center justify-between text-[11px] text-chill-100/90 z-10 pt-2 border-t border-white/10">
             <span>{tabunganList.length} Kantong Tabungan Aktif</span>
-            <span className="text-[10px] bg-white/15 px-2 py-0.5 rounded-full font-bold">
-              Mandiri
-            </span>
+            {totalTargetPercent !== null ? (
+              <span className="text-[10px] bg-emerald-400/25 text-emerald-200 border border-emerald-300/30 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                <Target className="w-2.5 h-2.5" /> {totalTargetPercent}% Target Portofolio
+              </span>
+            ) : (
+              <span className="text-[10px] bg-white/15 px-2 py-0.5 rounded-full font-bold">
+                Mandiri
+              </span>
+            )}
           </div>
         </div>
 
@@ -350,6 +368,56 @@ export default function Dashboard() {
                       <div className="text-lg font-black text-chill-900 mt-1">
                         {showBalance ? formatRupiah(item.saldo) : '••••••••'}
                       </div>
+
+                      {/* Presentase Target Tabungan */}
+                      {(() => {
+                        const target = item.target_nominal || item.pesanan?.target_nominal || null;
+                        const numSaldo = Number(item.saldo || 0);
+                        const numTarget = Number(target || 0);
+                        if (!numTarget || numTarget <= 0) return null;
+
+                        const percent = Math.min(100, Math.round((numSaldo / numTarget) * 100));
+                        const sisa = Math.max(0, numTarget - numSaldo);
+                        const isReached = numSaldo >= numTarget;
+
+                        return (
+                          <div className="mt-3 pt-2.5 border-t border-[#edf4f0] space-y-1.5">
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="text-ink-muted flex items-center gap-1 font-semibold">
+                                <Target className="w-3 h-3 text-chill-600" />
+                                Target {formatRupiah(numTarget)}
+                              </span>
+                              <span
+                                className={`font-black px-1.5 py-0.2 rounded text-[10px] ${
+                                  isReached
+                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                    : 'bg-chill-100 text-chill-800 border border-chill-200'
+                                }`}
+                              >
+                                {percent}%
+                              </span>
+                            </div>
+
+                            <div className="w-full bg-[#e8f2ee] rounded-full h-2 overflow-hidden">
+                              <div
+                                className={`h-2 rounded-full transition-all duration-500 ${
+                                  isReached
+                                    ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                                    : 'bg-gradient-to-r from-chill-600 to-chill-400'
+                                }`}
+                                style={{ width: `${percent}%` }}
+                              />
+                            </div>
+
+                            <div className="text-[10px] text-ink-muted flex items-center justify-between">
+                              <span className={isReached ? 'text-emerald-700 font-bold' : ''}>
+                                {isReached ? '🎉 Target tercapai!' : `Sisa ${formatRupiah(sisa)} lagi`}
+                              </span>
+                              <span>{showBalance ? formatRupiah(numSaldo) : '••••'}</span>
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     <div className="mt-5 pt-3 border-t border-[#edf4f0] flex items-center justify-between gap-2">

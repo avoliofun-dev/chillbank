@@ -32,7 +32,11 @@ export default function TabunganList() {
           tag_ditulis,
           saldo,
           aktif,
+          target_nominal,
           created_at,
+          pesanan:pesanan_id (
+            target_nominal
+          ),
           member:member_id (nama, no_hp)
         `)
         .order('created_at', { ascending: false });
@@ -105,6 +109,16 @@ export default function TabunganList() {
                 <div className="flex items-center justify-between sm:justify-end gap-4">
                   <div className="text-left sm:text-right">
                     <div className="text-xs font-black text-ink">{formatRupiah(item.saldo)}</div>
+                    {(() => {
+                      const target = item.target_nominal || item.pesanan?.target_nominal;
+                      if (!target || Number(target) <= 0) return null;
+                      const pct = Math.min(100, Math.round((Number(item.saldo || 0) / Number(target)) * 100));
+                      return (
+                        <div className="text-[10px] text-ink-muted">
+                          Target {formatRupiah(target)} · <span className="font-bold text-chill-700">{pct}%</span>
+                        </div>
+                      );
+                    })()}
                     <span
                       className={`inline-flex items-center gap-1 text-[10px] font-bold ${
                         item.tag_ditulis ? 'text-emerald-700' : 'text-amber-600'

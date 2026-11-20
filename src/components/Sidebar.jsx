@@ -19,10 +19,11 @@ import {
   CreditCard,
   CheckCircle2,
   ChevronRight,
+  Activity,
 } from 'lucide-react';
 
 export default function Sidebar() {
-  const { user, profile, isAdmin, signOut } = useAuth();
+  const { user, profile, isAdmin, requestLogout } = useAuth();
   const navigate = useNavigate();
   const [pendingCount, setPendingCount] = useState(0);
 
@@ -39,13 +40,8 @@ export default function Sidebar() {
     }
   }, [isAdmin, user]);
 
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
+  const handleLogout = () => {
+    requestLogout();
   };
 
   const memberNavGroups = [
@@ -61,6 +57,7 @@ export default function Sidebar() {
       items: [
         { to: '/scan', label: 'Scan / Buka Tag', icon: ScanLine },
         { to: '/riwayat', label: 'Riwayat Transaksi', icon: History },
+        { to: '/profil', label: 'Profil Saya', icon: User },
       ],
     },
   ];
@@ -70,6 +67,7 @@ export default function Sidebar() {
       group: 'PANEL KONTROL',
       items: [
         { to: '/admin', label: 'Ringkasan Eksekutif', icon: LayoutDashboard },
+        { to: '/admin/progres', label: 'Progres & Audit Proyek', icon: Activity },
         {
           to: '/admin/pesanan',
           label: 'Pesanan Tabungan',
@@ -193,20 +191,20 @@ export default function Sidebar() {
 
         {/* Bottom Profile & Logout Card */}
         <div className="pt-4 border-t border-[#edf4f0] space-y-3">
-          <div className="p-2.5 rounded-2xl bg-[#f8faf9] border border-[#e2eeea] flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-chill-600 to-chill-400 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+          <div className="p-2.5 rounded-2xl bg-[#f8faf9] border border-[#e2eeea] flex items-center justify-between gap-3 group">
+            <Link to="/profil" className="flex items-center gap-2.5 min-w-0 flex-1 hover:opacity-85 transition-opacity">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-chill-600 to-chill-400 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                 {profile?.nama ? profile.nama.charAt(0).toUpperCase() : 'M'}
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-extrabold text-ink truncate">
+                <div className="text-xs font-extrabold text-ink truncate group-hover:text-chill-700 transition-colors">
                   {profile?.nama || 'Member Keluarga'}
                 </div>
                 <div className="text-[10px] text-ink-muted truncate">
                   {user?.email || 'user@chillbank.com'}
                 </div>
               </div>
-            </div>
+            </Link>
 
             <button
               onClick={handleLogout}

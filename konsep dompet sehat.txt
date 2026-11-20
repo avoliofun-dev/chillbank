@@ -1,0 +1,103 @@
+Rencana Implementasi: Dompet Sehat (Healthy Wallet)
+Aplikasi web manajemen keuangan pribadi yang ramah pengguna, berpenampilan modern dan premium, 
+berfokus pada kesehatan finansial pengguna dengan sistem login, pengaturan profil, pencatatan transaksi, 
+visualisasi grafik, budgeting 50/30/20, dan skor kesehatan finansial.
+
+Arsitektur & Rekomendasi Database Gratis
+IMPORTANT
+
+Mengapa Supabase (PostgreSQL Cloud Gratis)? Banyak server gratis (seperti Vercel atau Render free tier) 
+akan menghapus file lokal (seperti file SQLite biasa) saat server restart atau tidak aktif. Oleh karena itu, kita menggunakan Supabase (PostgreSQL):
+
+100% Gratis (Free Tier hingga 500 MB database & 50.000 pengguna aktif).
+Dashboard Visual: Anda bisa melihat dan mengedit data tabel layaknya Excel / phpMyAdmin langsung dari browser.
+Hosting Gratis Tanpa Batas: Sangat kompatibel dengan Vercel atau Netlify (cukup hubungkan GitHub, 
+aplikasi langsung online dengan domain gratis .vercel.app dan HTTPS otomatis).
+Local / Offline Fallback: Aplikasi juga akan dilengkapi mode penyimpanan lokal (Browser Storage / SQLite mock) 
+sehingga Anda bisa langsung mencoba dan menjalankan aplikasinya di laptop Anda sekarang tanpa harus mendaftar Supabase terlebih dahulu.
+User Review Required
+NOTE
+
+Mohon tinjau tumpukan teknologi (tech stack) dan fitur utama yang diusulkan:
+
+Framework: Next.js (React) modern dengan Vanilla CSS custom design (Clean FinTech Emerald & Slate Dark/Light mode).
+Database Cloud Gratis: Supabase (PostgreSQL) + fallback demo lokal.
+Hosting Gratis: Vercel (Frontend & Serverless API gratis selamanya).
+Fitur Utama yang Akan Dibangun
+Sistem Autentikasi Lengkap:
+
+Register akun baru (Nama, Email, Password).
+Login & Logout dengan enkripsi aman dan manajemen sesi pengguna.
+Mode Cepat / Guest Demo untuk uji coba instan.
+Pengaturan Profil Pengguna:
+
+Ubah Nama, Avatar/Foto profil, dan Email.
+Pengaturan Mata Uang (IDR Rp, USD $, EUR €, dll.).
+Pengaturan Saldo Awal & Ubah Kata Sandi (Password).
+Indikator Kesehatan Finansial (Health Score):
+
+Skor Dinamis (0 - 100) berdasarkan rasio pengeluaran terhadap pendapatan.
+Status visual: 🟢 Sehat Prima, 🟡 Waspada, 🔴 Kritis.
+Analisis & tips otomatis untuk memperbaiki pengeluaran.
+Pencatatan Transaksi & Kategori:
+
+Input cepat Pemasukan & Pengeluaran (Nominal, Kategori, Tanggal, Catatan).
+Filter berdasarkan bulan, tipe, atau pencarian nama transaksi.
+Kategori default cerdas (Makanan, Transport, Belanja, Tagihan, Gaji, Investasi, dll.).
+Budgeting 50/30/20 & Visualisasi Interaktif:
+
+Alokasi otomatis: 50% Kebutuhan, 30% Keinginan, 20% Tabungan/Investasi.
+Progress bar status penggunaan budget.
+Grafik arus kas bulanan & diagram breakdown pengeluaran per kategori.
+Proposed Changes
+Proyek Web Application (Next.js + Vanilla CSS)
+[NEW] 
+package.json
+Inisialisasi dependensi: next, react, react-dom, @supabase/supabase-js, lucide-react (icon modern), chart.js / canvas visualizer.
+[NEW] 
+schema.sql
+Skrip SQL 1-klik untuk membuat tabel profiles dan transactions di dashboard gratis Supabase.
+[NEW] 
+lib/supabase.js
+Konfigurasi koneksi Supabase client dengan fallback otomatis ke local storage jika env belum diisi, 
+sehingga aplikasi bisa langsung diuji coba secara offline.
+[NEW] 
+styles/globals.css
+Sistem desain CSS modern Vanilla (FinTech Glassmorphism, palet warna Emerald Mint & Dark Slate, 
+tipografi modern, animasi transisi yang halus, responsif mobile & desktop).
+[NEW] 
+context/AuthContext.js
+Context state manajemen untuk login, register, update profil, dan logout.
+[NEW] Komponen UI:
+Navbar.js
+: Header navigasi dengan indikator status login dan toggle tema/profil.
+HealthScoreCard.js
+: Kartu indikator skor kesehatan dompet dengan saran finansial.
+BudgetRuleCard.js
+: Pelacak aturan budgeting 50/30/20.
+TransactionModal.js
+: Modal popup tambah/edit transaksi cepat.
+TransactionList.js
+: Tabel & kartu riwayat transaksi dengan fitur filter dan hapus.
+CashflowChart.js
+: Visualisasi grafik pengeluaran vs pemasukan.
+[NEW] Halaman Aplikasi:
+pages/index.js
+: Dashboard utama Dompet Sehat.
+pages/login.js
+: Halaman Login & Register interaktif.
+pages/profile.js
+: Halaman Pengaturan Profil pengguna & preferensi mata uang.
+[NEW] 
+README.md
+Panduan lengkap cara menjalankan di komputer lokal dan panduan langkah-demi-langkah cara upload/deploy gratis ke Vercel & Supabase dalam 5 menit.
+Verification Plan
+Automated / Build Tests
+Jalankan npm run build untuk memastikan tidak ada kesalahan kompilasi atau sintaks.
+Jalankan server lokal npm run dev dan verifikasi HTTP status 200.
+Manual Verification
+Uji alur pendaftaran akun (Register) dan Login.
+Uji pengubahan profil dan mata uang di halaman Profile Settings.
+Uji tambah transaksi Pemasukan dan Pengeluaran.
+Verifikasi perhitungan otomatis Skor Kesehatan Finansial dan Budget 50/30/20.
+Uji responsivitas tampilan pada ukuran layar Mobile dan Desktop.

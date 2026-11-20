@@ -18,6 +18,7 @@ import {
   XCircle,
   ArrowDownLeft,
   ArrowUpRight,
+  Activity,
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -165,7 +166,15 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <Link
+            to="/admin/progres"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition-all hover:scale-[1.02]"
+          >
+            <Activity className="w-4 h-4 text-emerald-600" />
+            <span>Audit & Progres Proyek</span>
+          </Link>
+
           <Link
             to="/admin/tabungan"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-chill-600 text-white hover:bg-chill-700 shadow-md shadow-chill-600/20 transition-all hover:scale-[1.02]"

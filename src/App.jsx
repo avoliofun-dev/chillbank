@@ -12,6 +12,7 @@ import PesanTabungan from './pages/PesanTabungan';
 import TabunganDetail from './pages/TabunganDetail';
 import ScanTag from './pages/ScanTag';
 import Riwayat from './pages/Riwayat';
+import Profil from './pages/Profil';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -21,6 +22,7 @@ import TabunganList from './pages/admin/TabunganList';
 import TulisTag from './pages/admin/TulisTag';
 import TransaksiList from './pages/admin/TransaksiList';
 import MemberList from './pages/admin/MemberList';
+import ProgresAudit from './pages/admin/ProgresAudit';
 
 export default function App() {
   return (
@@ -48,6 +50,7 @@ export default function App() {
             <Route path="/t/:token" element={<TabunganDetail />} />
             <Route path="/scan" element={<ScanTag />} />
             <Route path="/riwayat" element={<Riwayat />} />
+            <Route path="/profil" element={<Profil />} />
 
             {/* Admin Routes (memerlukan role: 'admin') */}
             <Route
@@ -55,6 +58,14 @@ export default function App() {
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/progres"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <ProgresAudit />
                 </ProtectedRoute>
               }
             />

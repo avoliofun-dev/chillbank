@@ -14,17 +14,12 @@ import {
 } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, profile, isAdmin, signOut, isConfigured } = useAuth();
+  const { user, profile, isAdmin, isConfigured, requestLogout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
+  const handleLogout = () => {
+    requestLogout();
   };
 
   // Nama halaman berdasarkan pathname
@@ -34,10 +29,12 @@ export default function Navbar() {
     if (path.startsWith('/admin/transaksi')) return 'Audit Mutasi Transaksi';
     if (path.startsWith('/admin/member')) return 'Daftar Anggota Keluarga';
     if (path.startsWith('/admin/tulis-tag')) return 'Program Web NFC & Cetak QR';
+    if (path.startsWith('/admin/progres')) return 'Progres & Audit Proyek';
     if (path === '/admin') return 'Panel Eksekutif Administrator';
     if (path === '/pesan') return 'Pengajuan Tabungan Baru';
     if (path === '/scan') return 'Pindai Tag NFC & QR';
     if (path === '/riwayat') return 'Riwayat Mutasi Finansial';
+    if (path === '/profil') return 'Pengaturan Profil & Keamanan';
     if (path.startsWith('/t/')) return 'Detail Tabungan & Transaksi';
     return 'Dashboard Tabungan Keluarga';
   };
@@ -115,16 +112,18 @@ export default function Navbar() {
           {/* Role Pill & Mobile Logout */}
           {user ? (
             <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full ${
+              <Link
+                to="/profil"
+                title="Buka Pengaturan Profil"
+                className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full transition-all hover:scale-105 ${
                   isAdmin
-                    ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                    : 'bg-chill-50 text-chill-800 border border-chill-200'
+                    ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                    : 'bg-chill-50 text-chill-800 border border-chill-200 hover:bg-chill-100'
                 }`}
               >
                 {isAdmin ? <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> : <User className="w-3.5 h-3.5 text-chill-600" />}
                 <span className="capitalize">{profile?.nama?.split(' ')[0] || (isAdmin ? 'Admin' : 'Member')}</span>
-              </span>
+              </Link>
 
               <button
                 onClick={handleLogout}
